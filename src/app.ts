@@ -1,29 +1,20 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-
-const api = require('./router');
+import express from 'express';
+import cors from 'cors';
+import * as bodyParser from 'body-parser';
+import hpp from 'hpp';
+import helmet from 'helmet';
+import api from './router'
+import path from 'path';
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cors());
+app.use(hpp());
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use('/static', express.static(path.join(__dirname, '../public')));
 
 app.use('/api', api);
 
-app.get('/', (req, res) => {
-  res.json({ version: '0.0.0' });
-});
-
-// catch 404 and forward to error handler
-app.use((req, res) => {
-  res.sendStatus(404)
-});
-
-// error handlers
-// Handle Handled ERROR
-app.use((err, req, res) => {
-  return res.status(err.statusCode)
-});
-
-export default app
+export default app;
